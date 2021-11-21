@@ -1,0 +1,16 @@
+<div class="list-wrapper">
+  <div class="list-heading">
+    <span>Workers</span>
+  </div>
+  <div class="list-users" [class.loading]="!data.allUsers$.getValue()?.length">
+    <div *ngIf="!data.allUsers$.getValue()?.length; else workersLoaded"><span>Workers loading...</span></div>
+    <ng-template #workersLoaded>
+        <app-worker
+        *ngFor="let user of data.allUsers$ | async"
+        [workerData]="user"
+        [active]="user.id === data.selectedUser$.getValue()?.id"
+        (click)="data.selectedUser$.next(user)"
+      ></app-worker>
+    </ng-template>
+  </div>
+</div>

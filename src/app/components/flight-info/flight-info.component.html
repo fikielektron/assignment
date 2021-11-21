@@ -1,0 +1,21 @@
+<div class="content" [class.loading]="!data.selectedFlight$.getValue()">
+  <div class="loading" *ngIf="!data.selectedFlight$.getValue(); else flightsLoaded">Flight info loading...</div>
+  <ng-template #flightsLoaded>
+    <div class="row">
+      <span>Plane number</span>
+      <span>{{(data.selectedFlight$ | async)?.plane}}</span>
+    </div>
+    <div class="row">
+      <span>Duration </span>
+      <span>{{(data.selectedFlight$ | async)?.duration | duration}}</span>
+    </div>
+    <div class="row">
+      <span>Origin Gate</span>
+      <span>{{(data.selectedFlight$ | async)?.from_gate}}</span>
+    </div>
+    <div class="row">
+      <span>Destination Gate</span>
+      <span>{{(data.selectedFlight$ | async)?.to_gate}}</span>
+    </div>
+  </ng-template>
+</div>

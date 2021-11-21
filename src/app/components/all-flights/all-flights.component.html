@@ -1,0 +1,36 @@
+<div class="content">
+  <div class="table table-header">
+    <div>
+      <span> Flight Number </span>
+    </div>
+    <div>
+      <span> Origin </span>
+    </div>
+    <div>
+      <span> Origin Date </span>
+    </div>
+    <div>
+      <span> Destination </span>
+    </div>
+    <div>
+      <span> Destination Date </span>
+    </div>
+  </div>
+  <div class="table table-body" [class.loading]="!data.allFlights$.getValue()?.length">
+    <div *ngIf="!data.allFlights$.getValue()?.length; else flightsLoaded"><span>Flights loading...</span></div>
+    <ng-template #flightsLoaded>
+      <div
+      class="item"
+      *ngFor="let flight of data.allFlights$ | async"
+      [class.selected]="flight.num === data.selectedFlight$.getValue()?.num"
+      (click)="data.selectedFlight$.next(flight)"
+    >
+      <div>{{ flight.num }}</div>
+      <div>{{ flight.from }}</div>
+      <div>{{ flight.from_date }}</div>
+      <div>{{ flight.to }}</div>
+      <div>{{ flight.to_date }}</div>
+    </div>
+    </ng-template>
+  </div>
+</div>

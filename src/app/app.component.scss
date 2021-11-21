@@ -1,0 +1,79 @@
+.app-content{
+  display: grid;
+  grid-template-areas:
+  "wl af fi";
+  grid-template-columns: repeat(auto-fit, minmax(100px, auto));
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+  & > *{
+    border: 5px solid black;
+  }
+  & > *:nth-child(2){
+    border-left: none;
+    border-right: none;
+  }
+}
+
+app-workers-list{
+  grid-area: "wl";
+  grid-column: span 2;
+}
+
+app-all-flights{
+  grid-area: "af";
+  grid-column: span 5;
+}
+
+app-flight-info{
+  grid-area: "fi";
+  grid-column: span 3;
+}
+
+@media only screen and (max-width: 1000px){
+  .app-content{
+    & > *:nth-child(1){
+      border-bottom: none;
+    }
+    & > *:nth-child(2){
+      border-left: none;
+      border-right: 5px solid black;
+      border-bottom: none;
+    }
+  }
+  app-workers-list{
+    grid-column: span 4;
+  }
+
+  app-all-flights{
+    grid-column: span 6;
+
+  }
+
+  app-flight-info{
+    grid-column: span 10;
+  }
+}
+
+@media only screen and (max-width: 800px){
+  .app-content{
+    overflow-x: hidden;
+    overflow-y: auto;
+    & > *:nth-child(2){
+      border-left: 5px solid black;
+    }
+  }
+  app-workers-list{
+    grid-column: span 10;
+  }
+
+  app-all-flights{
+    grid-column: span 10;
+  }
+
+  app-flight-info{
+    grid-column: span 10;
+  }
+}
