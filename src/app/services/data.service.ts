@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, interval, Observable, Subject, Subscription } from 'rxjs';
 import { SubSink } from 'subsink';
 import { Flight } from '../models/flight.model';
 import { User } from '../models/user.model';
@@ -16,21 +16,24 @@ export class DataService implements OnDestroy{
   subs = new SubSink();
   ngOnDestroy(){
     this.subs.unsubscribe();
+    if(this.timer){
+      this.timer.unsubscribe();
+    }
   }
-
+  private timer: Subscription | null = null;
 
   public allUsers$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
   public allFlights$: BehaviorSubject<Flight[]> = new BehaviorSubject<Flight[]>([]);
   public selectedFlight$: BehaviorSubject<Flight | null> = new BehaviorSubject<Flight | null>(null);
-  constructor(private _api: ApiService) {
+  constructor(private api: ApiService) {
     this._initSubs();
   }
 
 
   public async fetchData(){
-    const allUsers = await this._api.getWorkers();
+    const allUsers = await this.api.getWorkers();
     if(allUsers){
       this.allUsers$.next(allUsers);
     }
@@ -51,7 +54,17 @@ export class DataService implements OnDestroy{
 
     this.subs.sink = this.selectedUser$.subscribe(async newUser => {
       if(newUser){
-        const allFlights = await this._api.getFlights(newUser);
+        if(this.timer){
+          this.timer.unsubscribe();
+          this.timer = interval(60000).subscribe(() => {
+            this.fetchData();
+          })
+        } else{
+          this.timer = interval(60000).subscribe(() => {
+            this.fetchData();
+          })
+        }
+        const allFlights = await this.api.getFlights(newUser);
         if(allFlights){
           this.allFlights$.next(allFlights);
         }
@@ -64,7 +77,6 @@ export class DataService implements OnDestroy{
         this.selectedFlight$.next(newFlights[0]);
       }
     })
-
 
     //END INIT_SUBS
   }
